@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Taller Club de Ciencias — E.N.P. Juan Facundo Quiroga</title>
+  <style>
+    :root{
+      --bg:#000;
+      --neon:#00bfff;
+      --neon-2:#0077cc;
+      --glass: rgba(255,255,255,0.04);
+      --mono: 'Courier New', Courier, monospace;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:var(--mono);background:linear-gradient(180deg,#000 0%, #02040a 60%);color:#9fd8ff;overflow:hidden}
+
+    /* Background + stars/grid */
+    .bg{
+      position:fixed;inset:0;z-index:0;pointer-events:none;
+      background-image:
+        radial-gradient(rgba(0,191,255,0.04) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(0,0,0,0.12), transparent 40%);
+      background-size:24px 24px, 100% 100%;
+      mix-blend-mode:screen;opacity:0.6;animation:drift 30s linear infinite;
+    }
+    @keyframes drift{from{transform:translateY(0)}to{transform:translateY(-120px)}}
+
+    /* Matrix lines */
+    .matrix{position:fixed;inset:0;z-index:0;opacity:0.12;font-size:14px;line-height:1;color:var(--neon);pointer-events:none;white-space:nowrap;overflow:hidden}
+    .matrix span{position:absolute;top:-100%;left:0;animation:fall 18s linear infinite}
+    @keyframes fall{0%{transform:translateY(-120%)}100%{transform:translateY(160%)}}
+
+    /* Main card */
+    .wrap{position:relative;z-index:2;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2.5rem}
+    .card{
+      width:920px;max-width:96%;display:grid;grid-template-columns:300px 1fr;gap:28px;
+      padding:26px;border-radius:14px;
+      background:linear-gradient(180deg, rgba(0,0,0,0.65), rgba(2,4,10,0.45));
+      box-shadow:0 12px 50px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.02);
+      border:1px solid rgba(0,191,255,0.06);backdrop-filter: blur(6px) saturate(120%);
+      position:relative;overflow:hidden;
+    }
+    .card:before{content:"";position:absolute;inset:-2px;z-index:0;background:linear-gradient(90deg, transparent, rgba(0,191,255,0.06), transparent);filter:blur(12px)}
+
+    /* Avatar / Left column */
+    .avatar{position:relative;z-index:3;display:flex;flex-direction:column;align-items:center;gap:14px;padding:8px}
+    .avatar img{
+      width:100%;
+      max-width:220px;
+      height:auto;
+      object-fit:cover;
+      border-radius:0; /* no circular */
+      border:4px solid rgba(0,191,255,0.14);
+      box-shadow:0 0 50px rgba(0,191,255,0.14), 0 8px 30px rgba(0,0,0,0.6);
+      transform:rotate(-2deg);
+      transition:transform 0.6s cubic-bezier(.2,.9,.2,1);
+    }
+    .avatar img:hover{transform:rotate(0deg) scale(1.03)}
+
+    .bio{padding:12px 18px;background:linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.12));border-radius:10px;border:1px solid rgba(0,191,255,0.04);box-shadow:inset 0 1px 0 rgba(255,255,255,0.02)}
+    .bio p{margin:0 0 8px 0;color:#d6f6ff}
+
+    /* Right column */
+    .terminal{background:linear-gradient(180deg, rgba(0,12,20,0.45), rgba(0,0,0,0.35));padding:14px;border-radius:8px;font-size:0.95rem;line-height:1.45;color:#bfefff;box-shadow:0 10px 30px rgba(0,0,0,0.6)}
+    .cmd{font-family:var(--mono);white-space:pre-wrap}
+
+    /* Title glitch */
+    .title-wrap{position:relative;display:inline-block}
+    .glitch{position:relative;font-weight:700}
+    .glitch::before,.glitch::after{content:attr(data-text);position:absolute;left:0;top:0;width:100%;height:100%;opacity:0.85}
+    .glitch::before{transform:translate(3px,-2px);color:var(--neon-2);mix-blend-mode:screen;filter:blur(.6px);animation:glitch-1 2.2s infinite}
+    .glitch::after{transform:translate(-3px,2px);color:var(--neon);mix-blend-mode:screen;animation:glitch-2 2.6s infinite}
+    @keyframes glitch-1{0%{clip-path:inset(0)}20%{clip-path:inset(2% 0 60% 0)}40%{clip-path:inset(50% 0 10% 0)}60%{clip-path:inset(10% 0 50% 0)}100%{clip-path:inset(0)}}
+    @keyframes glitch-2{0%{clip-path:inset(0)}30%{clip-path:inset(20% 0 40% 0)}60%{clip-path:inset(60% 0 10% 0)}80%{clip-path:inset(10% 0 60% 0)}100%{clip-path:inset(0)}}
+
+    /* Side vertical cinematic banner (right) */
+    .side-banner{
+      position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:4;
+      display:flex;align-items:center;justify-content:center;
+      height:70vh;padding:8px 6px;border-radius:8px 0 0 8px;
+      pointer-events:none;
+    }
+    .side-text{
+      writing-mode:vertical-rl;
+      transform:rotate(180deg);
+      font-size:14px;letter-spacing:1px;font-weight:700;
+      color:#dff6ff;text-shadow:0 0 14px rgba(0,191,255,0.18);
+      padding:6px 10px;border-left:2px solid rgba(0,191,255,0.06);
+      background:linear-gradient(90deg, rgba(0,0,0,0.35), rgba(0,0,0,0.1));
+      border-radius:6px;
+      box-shadow:0 12px 30px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+      filter:drop-shadow(0 6px 20px rgba(0,191,255,0.06));
+      animation:glow 2.8s ease-in-out infinite alternate, flicker 6s steps(8, end) infinite;
+    }
+    @keyframes glow{
+      from{text-shadow:0 0 6px rgba(0,191,255,0.08), 0 0 18px rgba(0,191,255,0.06)}
+      to{text-shadow:0 0 18px rgba(0,191,255,0.22), 0 0 36px rgba(0,191,255,0.12)}
+    }
+    @keyframes flicker{
+      0%,100%{opacity:1}
+      5%{opacity:0.85}
+      7%{opacity:0.98}
+      30%{opacity:0.9}
+      32%{opacity:1}
+      70%{opacity:0.92}
+    }
+
+    /* Small screen adjustments */
+    @media (max-width:640px){
+      .card{grid-template-columns:1fr;padding:18px}
+      .avatar img{max-width:100%;height:auto}
+      .side-banner{height:52vh;right:6px}
+      .side-text{font-size:12px;padding:4px 8px}
+    }
+
+    @media (max-width:380px){
+      .side-banner{display:none}
+    }
+  </style>
+</head>
+<body>
+  <div class="bg" aria-hidden="true"></div>
+  <div class="matrix" aria-hidden="true"></div>
+
+  <div class="side-banner" aria-hidden="true">
+    <div class="side-text">
+      Taller Club de Ciencias — Escuela Normal Provincial Juan Facundo Quiroga
+    </div>
+  </div>
+
+  <div class="wrap">
+    <main class="card" role="main" aria-label="Perfil Club de Ciencias">
+      <div class="avatar">
+        <img id="avatar" src="escudo.png" alt="Logo del Club">
+        <div style="text-align:center;max-width:240px">
+          <h1 class="title-wrap"><span class="glitch" data-text="CLUB DE CIENCIAS">CLUB DE CIENCIAS</span></h1>
+          <div class="handle" style="font-size:0.95rem;color:#bfeeff;opacity:0.95">Escuela Normal Provincial Juan Facundo Quiroga</div>
+        </div>
+
+        <div class="bio" style="width:100%">
+          <p><strong>Proyecto:</strong> Taller de Innovación y Ciencia — Fomentando la curiosidad y el pensamiento experimental entre los estudiantes.</p>
+          <p style="font-size:0.85rem;opacity:0.9">Ubicación: Chepes - La Rioja, Argentina • Área: Tecnología y Ciencias Aplicadas</p>
+        </div>
+      </div>
+
+      <section style="z-index:3">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px">
+          <div style="display:flex;flex-direction:column">
+            <div style="font-size:0.95rem;color:#dff6ff;">Perfil</div>
+            <div style="font-size:0.82rem;opacity:0.85">Innovación — Creatividad — Futuro</div>
+          </div>
+          <div style="font-family:var(--mono);font-size:0.85rem;color:#aee9ff;">Last updated: <span id="lastseen">—</span></div>
+        </div>
+
+        <div class="terminal">
+          <div class="cmd" id="terminal">
+            $ inicializando laboratorio...
+            $ cargando módulos [ciencia, innovación, comunidad]
+            $ echo "Bienvenidos al Club de Ciencias"
+          </div>
+        </div>
+
+        <div style="height:14px"></div>
+
+        <div class="bio">
+          <strong>Sobre el Club</strong>
+          <p>El Club de Ciencias promueve el aprendizaje activo a través de la experimentación, la observación y la colaboración. Nuestro objetivo es despertar el interés por la ciencia y la tecnología, fortaleciendo el pensamiento crítico y creativo.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const term = document.getElementById('terminal');
+    const lines = [
+      "$ inicializando laboratorio...",
+      "$ cargando módulos [ciencia, innovación, comunidad]",
+      "$ preparando entorno educativo...",
+      "$ conexión establecida",
+      "$ echo \"Bienvenidos al Club de Ciencias\"",
+      "Bienvenidos al Club de Ciencias"
+    ];
+    let li = 0;
+    function typeLine(){
+      if(li >= lines.length) return;
+      const line = lines[li++] + "\n";
+      let i = 0;
+      const intr = setInterval(()=> {
+        term.textContent += line[i++] || '';
+        term.scrollTop = term.scrollHeight;
+        if(i > line.length){ clearInterval(intr); setTimeout(typeLine, 350) }
+      }, 22);
+    }
+    setTimeout(typeLine, 600);
+
+    document.getElementById('lastseen').textContent = new Date().toLocaleString();
+
+    const matrix = document.querySelector('.matrix');
+    const chars = '01█▓▒░<>/\\\\|[]{}+=-:;.';
+    for(let c=0;c<24;c++){
+      const span = document.createElement('span');
+      span.style.left = (c * 4.2) + '%';
+      span.style.fontSize = (8 + Math.random() * 12) + 'px';
+      span.style.opacity = 0.6 + Math.random() * 0.4;
+      let s = '';
+      for(let i=0;i<200;i++) s += chars.charAt(Math.floor(Math.random() * chars.length));
+      span.textContent = s;
+      span.style.animationDelay = (Math.random() * -18) + 's';
+      span.style.animationDuration = (12 + Math.random() * 18) + 's';
+      matrix.appendChild(span);
+    }
+
+    const av = document.getElementById('avatar');
+    av.onerror = ()=> {
+      av.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400"><rect width="100%" height="100%" fill="black"/><text x="50%" y="50%" font-size="22" fill="%2300bfff" text-anchor="middle" dy=".3em">CLUB CIENCIAS</text></svg>';
+    };
+  </script>
+</body>
+</html>
