@@ -13,7 +13,17 @@
       --mono: 'Courier New', Courier, monospace;
     }
     *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:var(--mono);background:linear-gradient(180deg,#000 0%, #02040a 60%);color:#9fd8ff;overflow:hidden}
+
+    /* 🔥 Cambio hecho aquí para permitir scroll con el dedo */
+    html,body{
+      height:auto;
+      margin:0;
+      font-family:var(--mono);
+      background:linear-gradient(180deg,#000 0%, #02040a 60%);
+      color:#9fd8ff;
+      overflow-y:auto; /* ✅ permite subir/bajar */
+      -webkit-overflow-scrolling:touch; /* ✅ scroll suave en celular */
+    }
 
     /* Background + stars/grid */
     .bg{
